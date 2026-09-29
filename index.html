@@ -7,9 +7,6 @@
 <title>Chat</title>
 
 <style>
-/* =========================================================
-   RESET
-========================================================= */
 
 * {
     box-sizing: border-box;
@@ -17,42 +14,33 @@
     padding: 0;
 }
 
+html,
 body {
-    min-height: 100vh;
+    width: 100%;
+    height: 100%;
+}
+
+body {
     background: #080808;
-    color: #d8d8d8;
-    font-family: Arial, Helvetica, sans-serif;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    overflow: hidden;
+    color: #ddd;
+    font-family: Arial, sans-serif;
 }
 
 
-/* =========================================================
-   CHAT
-========================================================= */
+/* CHAT */
 
 .chat {
-    width: min(100%, 520px);
+    width: 100%;
     height: 100vh;
-    max-height: 850px;
-
-    background: #0b0b0b;
 
     display: flex;
     flex-direction: column;
 
-    border-left: 1px solid #171717;
-    border-right: 1px solid #171717;
+    background: #080808;
 }
 
 
-/* =========================================================
-   HEADER
-========================================================= */
+/* HEADER */
 
 .header {
     height: 58px;
@@ -61,11 +49,9 @@ body {
     display: flex;
     align-items: center;
 
-    padding: 0 18px;
+    padding: 0 16px;
 
-    border-bottom: 1px solid #181818;
-
-    background: #0a0a0a;
+    border-bottom: 1px solid #1b1b1b;
 }
 
 .status {
@@ -76,78 +62,68 @@ body {
 
     border-radius: 50%;
 
-    background: #555;
+    background: #444;
 }
 
-.header-title {
+.title {
     font-size: 14px;
-    font-weight: 400;
-    letter-spacing: 0.5px;
 }
 
-.header-status {
+.online {
     margin-left: auto;
 
-    font-size: 10px;
-    color: #555;
+    color: #444;
 
+    font-size: 10px;
     letter-spacing: 1px;
 }
 
 
-/* =========================================================
-   ÁREA DE MENSAGENS
-========================================================= */
+/* MENSAGENS */
 
 .messages {
     flex: 1;
 
+    min-height: 0;
+
     overflow-y: auto;
 
-    padding: 25px 16px;
+    padding: 20px;
 
     display: flex;
     flex-direction: column;
-    gap: 12px;
-
-    scrollbar-width: thin;
-    scrollbar-color: #222 transparent;
+    gap: 10px;
 }
 
 
-/* =========================================================
-   MENSAGEM
-========================================================= */
+/* BALÕES */
 
 .message {
-    max-width: 78%;
+    max-width: 75%;
 
     padding: 10px 13px;
 
-    font-size: 14px;
-    line-height: 1.45;
-
     border-radius: 10px;
 
-    animation: appear 0.2s ease;
+    font-size: 14px;
+    line-height: 1.4;
+
+    word-wrap: break-word;
 }
 
-@keyframes appear {
-    from {
-        opacity: 0;
-        transform: translateY(4px);
-    }
+.bot {
+    align-self: flex-start;
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    background: #101010;
+
+    border: 1px solid #191919;
+
+    color: #aaa;
+
+    border-bottom-left-radius: 3px;
 }
 
-
-/* Mensagem do usuário */
-
-.message.user {
+.user {
     align-self: flex-end;
 
     background: #1b1b1b;
@@ -158,24 +134,7 @@ body {
 }
 
 
-/* Mensagem do bot */
-
-.message.bot {
-    align-self: flex-start;
-
-    background: #101010;
-
-    color: #aaa;
-
-    border: 1px solid #191919;
-
-    border-bottom-left-radius: 3px;
-}
-
-
-/* =========================================================
-   HORÁRIO
-========================================================= */
+/* HORÁRIO */
 
 .time {
     display: block;
@@ -190,14 +149,93 @@ body {
 }
 
 
-/* =========================================================
-   DIGITAÇÃO
-========================================================= */
+/* ÁREA DE ESCRITA */
+
+.input-area {
+    width: 100%;
+
+    flex-shrink: 0;
+
+    padding: 10px;
+
+    display: flex;
+    gap: 8px;
+
+    border-top: 1px solid #1b1b1b;
+
+    background: #090909;
+}
+
+
+/* CAMPO */
+
+.input {
+    flex: 1;
+
+    min-width: 0;
+
+    height: 44px;
+
+    padding: 0 14px;
+
+    border: 1px solid #222;
+
+    border-radius: 9px;
+
+    outline: none;
+
+    background: #111;
+
+    color: #ddd;
+
+    font-size: 14px;
+}
+
+.input::placeholder {
+    color: #444;
+}
+
+.input:focus {
+    border-color: #333;
+}
+
+
+/* BOTÃO */
+
+.send {
+    width: 44px;
+    height: 44px;
+
+    flex-shrink: 0;
+
+    border: 1px solid #222;
+
+    border-radius: 9px;
+
+    background: #151515;
+
+    color: #aaa;
+
+    font-size: 18px;
+
+    cursor: pointer;
+}
+
+.send:hover {
+    background: #202020;
+}
+
+.send:active {
+    transform: scale(.95);
+}
+
+
+/* DIGITANDO */
 
 .typing {
-    align-self: flex-start;
-
     display: none;
+
+    align-self: flex-start;
 
     padding: 9px 12px;
 
@@ -208,409 +246,182 @@ body {
     border-radius: 10px;
 
     color: #444;
-
-    font-size: 12px;
 }
 
-.typing.visible {
+.typing.active {
     display: block;
 }
 
-.typing span {
-    animation: blink 1.2s infinite;
-}
 
-.typing span:nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-.typing span:nth-child(3) {
-    animation-delay: 0.4s;
-}
-
-@keyframes blink {
-    0%, 100% {
-        opacity: 0.2;
-    }
-
-    50% {
-        opacity: 1;
-    }
-}
-
-
-/* =========================================================
-   ÁREA DE ENVIO
-========================================================= */
-
-.input-area {
-    flex-shrink: 0;
-
-    padding: 12px;
-
-    border-top: 1px solid #181818;
-
-    background: #0a0a0a;
-
-    display: flex;
-    gap: 8px;
-}
-
-
-/* Campo */
-
-.input {
-    flex: 1;
-
-    min-width: 0;
-
-    height: 42px;
-
-    padding: 0 14px;
-
-    background: #111;
-
-    border: 1px solid #1c1c1c;
-
-    border-radius: 9px;
-
-    outline: none;
-
-    color: #ddd;
-
-    font-size: 14px;
-
-    transition: border 0.2s;
-}
-
-.input::placeholder {
-    color: #444;
-}
-
-.input:focus {
-    border-color: #292929;
-}
-
-
-/* Botão */
-
-.send {
-    width: 42px;
-    height: 42px;
-
-    border: 1px solid #1d1d1d;
-
-    border-radius: 9px;
-
-    background: #151515;
-
-    color: #777;
-
-    cursor: pointer;
-
-    font-size: 17px;
-
-    transition:
-        background 0.2s,
-        color 0.2s;
-}
-
-.send:hover {
-    background: #1d1d1d;
-    color: #aaa;
-}
-
-.send:active {
-    transform: scale(0.96);
-}
-
-
-/* =========================================================
-   MOBILE
-========================================================= */
+/* CELULAR */
 
 @media (max-width: 600px) {
 
-    .chat {
-        width: 100%;
-        max-height: none;
-
-        border: none;
-    }
-
     .messages {
-        padding: 20px 12px;
+        padding: 15px 10px;
     }
 
     .message {
-        max-width: 84%;
+        max-width: 85%;
     }
+
+    .input-area {
+        padding: 8px;
+    }
+
 }
+
 </style>
 </head>
 
+
 <body>
+
 
 <div class="chat">
 
-    <!-- HEADER -->
+
+    <!-- CABEÇALHO -->
 
     <header class="header">
 
         <div class="status"></div>
 
-        <div class="header-title">
+        <div class="title">
             desconhecido
         </div>
 
-        <div class="header-status">
+        <div class="online">
             online
         </div>
 
     </header>
 
 
+
     <!-- MENSAGENS -->
 
-    <main class="messages" id="messages">
-
-        <!--
-            MENSAGEM DO BOT
-
-            Para o futuro bot, basta criar:
-
-            addBotMessage("texto");
-
-        -->
+    <main
+        class="messages"
+        id="messages"
+    >
 
         <div class="message bot">
 
             Você está aí?
 
-            <span class="time">agora</span>
+            <span class="time">
+                agora
+            </span>
 
         </div>
 
 
-        <div class="message bot">
-
+        <div
+            class="typing"
+            id="typing"
+        >
             ...
-
-            <span class="time">agora</span>
-
-        </div>
-
-
-        <!-- Indicador de digitação -->
-
-        <div class="typing" id="typing">
-
-            <span>•</span>
-            <span>•</span>
-            <span>•</span>
-
         </div>
 
     </main>
 
 
-    <!-- ENVIO -->
 
-    <form class="input-area" id="chatForm">
+    <!-- CAMPO DE ENVIO -->
+
+    <form
+        class="input-area"
+        id="chatForm"
+    >
 
         <input
             id="messageInput"
             class="input"
             type="text"
-            autocomplete="off"
             placeholder="Digite uma mensagem..."
+            autocomplete="off"
         >
 
         <button
             class="send"
             type="submit"
-            aria-label="Enviar"
         >
             ↑
         </button>
 
     </form>
 
+
 </div>
 
 
+
 <script>
-/*
-=========================================================
-   SISTEMA DE CHAT
-=========================================================
 
-   Este JavaScript é somente o sistema básico necessário
-   para testar a interface.
-
-   O BOT NÃO está implementado.
-
-   No futuro, seu bot poderá chamar:
-
-       addBotMessage("mensagem");
-
-   e a mensagem aparecerá automaticamente na interface.
-=========================================================
-*/
-
+/* ELEMENTOS */
 
 const form = document.getElementById("chatForm");
+
 const input = document.getElementById("messageInput");
+
 const messages = document.getElementById("messages");
-const typing = document.getElementById("typing");
 
 
-/*
-=========================================================
-   HORÁRIO
-=========================================================
-*/
+
+/* HORÁRIO */
 
 function getTime() {
 
     const now = new Date();
 
-    return now.toLocaleTimeString("pt-BR", {
-        hour: "2-digit",
-        minute: "2-digit"
-    });
+    return now.toLocaleTimeString(
+        "pt-BR",
+        {
+            hour: "2-digit",
+            minute: "2-digit"
+        }
+    );
 
 }
 
 
-/*
-=========================================================
-   ADICIONAR MENSAGEM DO USUÁRIO
-=========================================================
-*/
 
-function addUserMessage(text) {
+/* PROTEÇÃO CONTRA HTML */
 
-    if (!text.trim()) return;
+function escapeHTML(text) {
+
+    const element = document.createElement("div");
+
+    element.textContent = text;
+
+    return element.innerHTML;
+
+}
+
+
+
+/* ADICIONAR MENSAGEM */
+
+function addMessage(text, type) {
 
     const message = document.createElement("div");
 
-    message.className = "message user";
+    message.className = "message " + type;
 
-    message.innerHTML = `
-        ${escapeHTML(text)}
+    message.innerHTML =
+        escapeHTML(text) +
+        `<span class="time">${getTime()}</span>`;
 
-        <span class="time">
-            ${getTime()}
-        </span>
-    `;
-
-    messages.insertBefore(message, typing);
-
-    scrollToBottom();
-}
-
-
-/*
-=========================================================
-   ADICIONAR MENSAGEM DO BOT
-=========================================================
-
-   ESTA É A FUNÇÃO QUE O FUTURO BOT DEVERÁ USAR.
-
-   Exemplo:
-
-       addBotMessage("Eu estava esperando.");
-
-=========================================================
-*/
-
-function addBotMessage(text) {
-
-    const message = document.createElement("div");
-
-    message.className = "message bot";
-
-    message.innerHTML = `
-        ${escapeHTML(text)}
-
-        <span class="time">
-            ${getTime()}
-        </span>
-    `;
-
-    messages.insertBefore(message, typing);
-
-    scrollToBottom();
-}
-
-
-/*
-=========================================================
-   INDICADOR DE DIGITAÇÃO
-=========================================================
-*/
-
-function showTyping() {
-
-    typing.classList.add("visible");
-
-    scrollToBottom();
-
-}
-
-
-function hideTyping() {
-
-    typing.classList.remove("visible");
-
-}
-
-
-/*
-=========================================================
-   SCROLL
-=========================================================
-*/
-
-function scrollToBottom() {
+    messages.appendChild(message);
 
     messages.scrollTop = messages.scrollHeight;
 
 }
 
 
-/*
-=========================================================
-   SEGURANÇA
 
-   Evita interpretar mensagens como HTML.
-
-   Isso será importante quando o bot receber conteúdo
-   externo futuramente.
-=========================================================
-*/
-
-function escapeHTML(text) {
-
-    const div = document.createElement("div");
-
-    div.textContent = text;
-
-    return div.innerHTML;
-
-}
-
-
-/*
-=========================================================
-   ENVIO
-
-   Por enquanto, a mensagem apenas aparece no chat.
-
-   NÃO existe resposta automática do bot.
-=========================================================
-*/
+/* ENVIO */
 
 form.addEventListener("submit", function(event) {
 
@@ -618,9 +429,11 @@ form.addEventListener("submit", function(event) {
 
     const text = input.value.trim();
 
-    if (!text) return;
+    if (text === "") {
+        return;
+    }
 
-    addUserMessage(text);
+    addMessage(text, "user");
 
     input.value = "";
 
@@ -629,37 +442,40 @@ form.addEventListener("submit", function(event) {
 });
 
 
-/*
-=========================================================
-   ENTER
-
-   O formulário já permite enviar pressionando Enter.
-=========================================================
-*/
-
 
 /*
-=========================================================
-   FUTURO BOT
+==================================================
+ FUNÇÃO PARA O FUTURO BOT
+==================================================
 
-   O arquivo bot.js poderá fazer algo como:
+ Depois você poderá criar um bot.js e fazer:
 
-       addBotMessage("...");
+ addBotMessage("alguma coisa");
 
-   ou:
-
-       showTyping();
-
-       setTimeout(() => {
-           hideTyping();
-           addBotMessage("Eu sei que você está aí.");
-       }, 2000);
-
-   A lógica do bot ficará completamente separada
-   desta interface.
-=========================================================
 */
+
+function addBotMessage(text) {
+
+    addMessage(text, "bot");
+
+}
+
+
+
+/*
+==================================================
+ TESTE
+
+ Abra o console do navegador e execute:
+
+ addBotMessage("Eu estava esperando você.");
+
+ Isso adicionará uma mensagem do bot.
+
+==================================================
+*/
+
 </script>
 
 </body>
-  </html>
+</html>
