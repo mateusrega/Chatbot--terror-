@@ -1,629 +1,376 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
->
+    <title>Chat</title>
 
-<title>Chat</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-<style>
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background: #080808;
+            color: #eee;
+        }
 
-/* =====================================================
-   RESET
-===================================================== */
+        body {
+            display: flex;
+            justify-content: center;
+        }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+        .chat {
+            width: 100%;
+            max-width: 700px;
+            height: 100dvh;
 
-html {
-    width: 100%;
-    height: 100%;
-}
+            display: flex;
+            flex-direction: column;
 
-body {
-    width: 100%;
-    min-height: 100%;
+            background: #0d0d0d;
+        }
 
-    background: #080808;
-    color: #ddd;
+        /* HEADER */
 
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
+        .header {
+            flex-shrink: 0;
 
-    overflow: hidden;
-}
+            height: 60px;
+            padding: 0 18px;
 
+            display: flex;
+            align-items: center;
 
-/* =====================================================
-   CHAT
-===================================================== */
+            border-bottom: 1px solid #1d1d1d;
+            background: #0b0b0b;
+        }
 
-.chat {
-    width: 100%;
-    height: 100vh;
-    height: 100dvh;
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 9px;
 
-    display: flex;
-    flex-direction: column;
+            font-size: 14px;
+            color: #888;
+        }
 
-    background: #080808;
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #777;
+        }
 
-    overflow: hidden;
-}
+        /* MENSAGENS */
 
+        .messages {
+            flex: 1;
 
-/* =====================================================
-   HEADER
-===================================================== */
+            min-height: 0;
 
-.header {
-    width: 100%;
+            overflow-y: auto;
 
-    min-height: 58px;
+            padding: 20px 16px;
 
-    padding:
-        0
-        clamp(12px, 4vw, 24px);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
 
-    display: flex;
-    align-items: center;
+            scrollbar-width: thin;
+            scrollbar-color: #333 transparent;
+        }
 
-    flex-shrink: 0;
+        .message {
+            max-width: 80%;
 
-    border-bottom: 1px solid #1b1b1b;
+            padding: 11px 14px;
 
-    background: #090909;
-}
+            border-radius: 14px;
 
+            line-height: 1.45;
+            font-size: 15px;
 
-.status {
-    width: 7px;
-    height: 7px;
+            word-wrap: break-word;
 
-    flex-shrink: 0;
+            animation: messageAppear 0.2s ease;
+        }
 
-    margin-right: 10px;
+        .bot {
+            align-self: flex-start;
 
-    border-radius: 50%;
+            background: #181818;
+            border: 1px solid #242424;
 
-    background: #444;
-}
+            color: #ddd;
 
+            border-bottom-left-radius: 4px;
+        }
 
-.title {
-    min-width: 0;
+        .user {
+            align-self: flex-end;
 
-    overflow: hidden;
+            background: #252525;
 
-    white-space: nowrap;
-    text-overflow: ellipsis;
+            color: #eee;
 
-    font-size: clamp(13px, 3.5vw, 15px);
-}
+            border-bottom-right-radius: 4px;
+        }
 
+        .time {
+            display: block;
 
-.online {
-    margin-left: auto;
+            margin-top: 5px;
 
-    flex-shrink: 0;
+            font-size: 10px;
+            color: #666;
 
-    color: #444;
+            text-align: right;
+        }
 
-    font-size: clamp(8px, 2.5vw, 10px);
+        /* DIGITANDO */
 
-    letter-spacing: 1px;
-}
+        .typing {
+            display: none;
 
+            align-self: flex-start;
 
-/* =====================================================
-   ÁREA DE MENSAGENS
-===================================================== */
+            padding: 10px 14px;
 
-.messages {
-    width: 100%;
+            background: #181818;
 
-    flex: 1;
+            border: 1px solid #242424;
 
-    min-height: 0;
+            border-radius: 14px;
+            border-bottom-left-radius: 4px;
+        }
 
-    overflow-x: hidden;
-    overflow-y: auto;
+        .typing span {
+            display: inline-block;
 
-    padding:
-        clamp(12px, 4vw, 24px);
+            width: 5px;
+            height: 5px;
 
-    display: flex;
-    flex-direction: column;
+            margin: 0 2px;
 
-    gap: clamp(8px, 2vw, 12px);
+            border-radius: 50%;
 
-    scroll-behavior: smooth;
+            background: #777;
 
-    scrollbar-width: thin;
-    scrollbar-color: #222 transparent;
-}
+            animation: typing 1.2s infinite;
+        }
 
+        .typing span:nth-child(2) {
+            animation-delay: .2s;
+        }
 
-/* =====================================================
-   BALÕES
-===================================================== */
+        .typing span:nth-child(3) {
+            animation-delay: .4s;
+        }
 
-.message {
-    width: fit-content;
+        /* INPUT */
 
-    max-width: min(75%, 600px);
+        .input-area {
+            flex-shrink: 0;
 
-    padding:
-        clamp(9px, 2.5vw, 12px)
-        clamp(11px, 3vw, 15px);
+            display: flex;
+            gap: 8px;
 
-    border-radius: 10px;
+            padding: 12px;
 
-    font-size:
-        clamp(13px, 3.6vw, 15px);
+            padding-bottom: max(
+                12px,
+                env(safe-area-inset-bottom)
+            );
 
-    line-height: 1.45;
+            border-top: 1px solid #1d1d1d;
 
-    overflow-wrap: anywhere;
+            background: #0b0b0b;
+        }
 
-    word-break: break-word;
-}
+        #messageInput {
+            flex: 1;
 
+            min-width: 0;
 
-.bot {
-    align-self: flex-start;
+            height: 44px;
 
-    background: #101010;
+            padding: 0 14px;
 
-    border: 1px solid #191919;
+            border: 1px solid #252525;
+            border-radius: 22px;
 
-    color: #aaa;
+            outline: none;
 
-    border-bottom-left-radius: 3px;
-}
+            background: #151515;
+            color: #eee;
 
+            font-size: 15px;
+        }
 
-.user {
-    align-self: flex-end;
+        #messageInput:focus {
+            border-color: #383838;
+        }
 
-    background: #1b1b1b;
+        #sendButton {
+            width: 44px;
+            height: 44px;
 
-    color: #eee;
+            flex-shrink: 0;
 
-    border-bottom-right-radius: 3px;
-}
+            border: none;
+            border-radius: 50%;
 
+            background: #ddd;
+            color: #111;
 
-/* =====================================================
-   HORÁRIO
-===================================================== */
+            cursor: pointer;
 
-.time {
-    display: block;
+            font-size: 18px;
+        }
 
-    margin-top: 4px;
+        #sendButton:active {
+            transform: scale(.94);
+        }
 
-    color: #444;
+        @keyframes messageAppear {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
 
-    font-size:
-        clamp(8px, 2.2vw, 10px);
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    text-align: right;
-}
+        @keyframes typing {
+            0%, 60%, 100% {
+                opacity: .3;
+                transform: translateY(0);
+            }
 
+            30% {
+                opacity: 1;
+                transform: translateY(-3px);
+            }
+        }
 
-/* =====================================================
-   DIGITANDO
-===================================================== */
+        @media (max-width: 500px) {
+            .message {
+                max-width: 86%;
+                font-size: 14px;
+            }
 
-.typing {
-    display: none;
-
-    align-self: flex-start;
-
-    padding:
-        8px 12px;
-
-    background: #101010;
-
-    border: 1px solid #191919;
-
-    border-radius: 10px;
-
-    color: #444;
-
-    font-size: 13px;
-}
-
-
-.typing.active {
-    display: block;
-}
-
-
-/* =====================================================
-   ÁREA DE ENVIO
-===================================================== */
-
-.input-area {
-    width: 100%;
-
-    flex-shrink: 0;
-
-    display: flex;
-    align-items: center;
-
-    gap: clamp(6px, 2vw, 10px);
-
-    padding:
-        clamp(7px, 2vw, 12px)
-        clamp(8px, 3vw, 16px);
-
-    padding-bottom:
-        max(
-            clamp(7px, 2vw, 12px),
-            env(safe-area-inset-bottom)
-        );
-
-    border-top: 1px solid #1b1b1b;
-
-    background: #090909;
-}
-
-
-/* =====================================================
-   INPUT
-===================================================== */
-
-.input {
-    width: 100%;
-    min-width: 0;
-
-    height:
-        clamp(40px, 10vw, 46px);
-
-    padding:
-        0 clamp(11px, 3vw, 15px);
-
-    border: 1px solid #222;
-
-    border-radius: 9px;
-
-    outline: none;
-
-    background: #111;
-
-    color: #ddd;
-
-    font-family: inherit;
-
-    font-size:
-        clamp(13px, 3.7vw, 15px);
-}
-
-
-.input::placeholder {
-    color: #444;
-}
-
-
-.input:focus {
-    border-color: #333;
-}
-
-
-/* =====================================================
-   BOTÃO
-===================================================== */
-
-.send {
-    width:
-        clamp(40px, 11vw, 46px);
-
-    height:
-        clamp(40px, 11vw, 46px);
-
-    flex-shrink: 0;
-
-    border: 1px solid #222;
-
-    border-radius: 9px;
-
-    background: #151515;
-
-    color: #aaa;
-
-    font-size:
-        clamp(16px, 5vw, 19px);
-
-    cursor: pointer;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    transition:
-        background .15s,
-        transform .1s;
-}
-
-
-.send:hover {
-    background: #202020;
-}
-
-
-.send:active {
-    transform: scale(.94);
-}
-
-
-/* =====================================================
-   TELAS PEQUENAS
-===================================================== */
-
-@media (max-width: 400px) {
-
-    .header {
-        min-height: 52px;
-    }
-
-    .messages {
-        padding: 10px;
-    }
-
-    .message {
-        max-width: 88%;
-    }
-
-}
-
-
-/* =====================================================
-   TELAS GRANDES
-===================================================== */
-
-@media (min-width: 900px) {
-
-    .chat {
-        max-width: 700px;
-
-        margin: 0 auto;
-
-        border-left: 1px solid #151515;
-        border-right: 1px solid #151515;
-    }
-
-}
-
-
-/* =====================================================
-   ALTURA MUITO PEQUENA
-===================================================== */
-
-@media (max-height: 500px) {
-
-    .header {
-        min-height: 45px;
-    }
-
-    .messages {
-        padding-top: 8px;
-        padding-bottom: 8px;
-    }
-
-    .input-area {
-        padding-top: 6px;
-        padding-bottom: 6px;
-    }
-
-    .input,
-    .send {
-        height: 38px;
-    }
-
-}
-
-</style>
+            .messages {
+                padding: 14px 10px;
+            }
+        }
+    </style>
 </head>
-
 
 <body>
 
-
 <div class="chat">
 
-
-    <!-- ================= HEADER ================= -->
-
     <header class="header">
-
-        <div class="status"></div>
-
-        <div class="title">
-            desconhecido
+        <div class="status">
+            <span class="status-dot"></span>
+            <span>desconhecido</span>
         </div>
-
-        <div class="online">
-            online
-        </div>
-
     </header>
 
-
-    <!-- ================= MENSAGENS ================= -->
-
-    <main
-        class="messages"
-        id="messages"
-    >
+    <main id="messages" class="messages">
 
         <div class="message bot">
-
-            Você está aí?
-
-            <span class="time">
-                agora
-            </span>
-
+            Você demorou.
+            <span class="time">agora</span>
         </div>
 
-
-        <div
-            class="typing"
-            id="typing"
-        >
-            ...
+        <div id="typing" class="typing">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
 
     </main>
 
-
-    <!-- ================= ENVIO ================= -->
-
-    <form
-        class="input-area"
-        id="chatForm"
-    >
+    <form id="chatForm" class="input-area">
 
         <input
             id="messageInput"
-            class="input"
             type="text"
             autocomplete="off"
-            placeholder="Digite uma mensagem..."
+            placeholder="Escreva..."
         >
 
-        <button
-            class="send"
-            type="submit"
-            aria-label="Enviar mensagem"
-        >
+        <button id="sendButton" type="submit">
             ↑
         </button>
 
     </form>
 
-
 </div>
 
+<script src="bot.js"></script>
 
 <script>
+    const form = document.getElementById("chatForm");
+    const input = document.getElementById("messageInput");
+    const messages = document.getElementById("messages");
+    const typing = document.getElementById("typing");
 
-/* =====================================================
-   ELEMENTOS
-===================================================== */
-
-const form =
-    document.getElementById("chatForm");
-
-const input =
-    document.getElementById("messageInput");
-
-const messages =
-    document.getElementById("messages");
-
-
-/* =====================================================
-   HORÁRIO
-===================================================== */
-
-function getTime() {
-
-    const now = new Date();
-
-    return now.toLocaleTimeString(
-        "pt-BR",
-        {
+    function getTime() {
+        return new Date().toLocaleTimeString("pt-BR", {
             hour: "2-digit",
             minute: "2-digit"
-        }
-    );
+        });
+    }
 
-}
+    function addMessage(text, type) {
+        const message = document.createElement("div");
 
+        message.className = `message ${type}`;
 
-/* =====================================================
-   SEGURANÇA
-===================================================== */
+        message.innerHTML = `
+            ${escapeHTML(text)}
+            <span class="time">${getTime()}</span>
+        `;
 
-function escapeHTML(text) {
+        messages.insertBefore(message, typing);
 
-    const element =
-        document.createElement("div");
+        messages.scrollTop = messages.scrollHeight;
+    }
 
-    element.textContent = text;
+    function escapeHTML(text) {
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+    }
 
-    return element.innerHTML;
+    function showTyping() {
+        typing.style.display = "block";
+        messages.scrollTop = messages.scrollHeight;
+    }
 
-}
+    function hideTyping() {
+        typing.style.display = "none";
+    }
 
+    async function sendMessage() {
 
-/* =====================================================
-   ADICIONAR MENSAGEM
-===================================================== */
+        const text = input.value.trim();
 
-function addMessage(text, type) {
-
-    const message =
-        document.createElement("div");
-
-    message.className =
-        "message " + type;
-
-    message.innerHTML =
-        escapeHTML(text) +
-        `<span class="time">${getTime()}</span>`;
-
-    messages.appendChild(message);
-
-    requestAnimationFrame(() => {
-
-        messages.scrollTop =
-            messages.scrollHeight;
-
-    });
-
-}
-
-
-/* =====================================================
-   MENSAGEM DO BOT
-===================================================== */
-
-function addBotMessage(text) {
-
-    addMessage(text, "bot");
-
-}
-
-
-/* =====================================================
-   ENVIO
-===================================================== */
-
-form.addEventListener(
-    "submit",
-    function(event) {
-
-        event.preventDefault();
-
-        const text =
-            input.value.trim();
-
-        if (!text) {
-            return;
-        }
+        if (!text) return;
 
         addMessage(text, "user");
 
@@ -631,50 +378,47 @@ form.addEventListener(
 
         input.focus();
 
+        showTyping();
+
+        /*
+         * O cérebro do bot está no bot.js.
+         */
+        const response = await HorrorBot.respond(text);
+
+        /*
+         * Pequeno atraso para a conversa não parecer
+         * uma resposta instantânea de programa.
+         */
+        const delay = 350 + Math.random() * 800;
+
+        setTimeout(() => {
+
+            hideTyping();
+
+            addMessage(response, "bot");
+
+        }, delay);
     }
-);
 
+    form.addEventListener("submit", event => {
 
-/* =====================================================
-   FUTURO BOT
+        event.preventDefault();
 
-   O futuro bot.js poderá simplesmente utilizar:
+        sendMessage();
 
-       addBotMessage("Olá.");
+    });
 
-   ou:
+    input.addEventListener("keydown", event => {
 
-       showTyping();
-       hideTyping();
+        if (event.key === "Enter" && !event.shiftKey) {
 
-===================================================== */
+            event.preventDefault();
 
-
-/* =====================================================
-   TECLADO MOBILE
-
-   Quando o teclado virtual abrir, tentamos manter
-   a última mensagem visível.
-===================================================== */
-
-if (window.visualViewport) {
-
-    window.visualViewport.addEventListener(
-        "resize",
-        () => {
-
-            requestAnimationFrame(() => {
-
-                messages.scrollTop =
-                    messages.scrollHeight;
-
-            });
+            sendMessage();
 
         }
-    );
 
-}
-
+    });
 </script>
 
 </body>
